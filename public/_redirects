@@ -1,0 +1,25 @@
+# Cloudflare Pages redirects. Pages ignores .htaccess, so the old WordPress/PHP
+# addresses are redirected here instead. (.htaccess stays for the Apache option.)
+# Format: [old path] [new path] [code]. Pages also turns /page.html into /page.
+
+/index.php / 301
+/ir.php / 301
+
+# Catalog shortcuts go straight to their flipbook page
+/sdo.php /catalog/Prod_Sel_Pgs_w_Index/#p=30 301
+/hdo.php /catalog/Prod_Sel_Pgs_w_Index/#p=57 301
+
+/new.php /new 301
+/sd.php /sd 301
+/hd.php /hd 301
+/tb.php /tb 301
+/pf.php /pf 301
+/ham.php /ham 301
+/ro.php /ro 301
+/calc.php /calc 301
+/mission.php /mission 301
+/map.php /map 301
+
+# Old WordPress sitemap addresses
+/wp-sitemap.xml /sitemap.xml 301
+/sitemap_index.xml /sitemap.xml 301

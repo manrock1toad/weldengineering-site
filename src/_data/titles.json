@@ -1,0 +1,3 @@
+{
+  "_comment": "Optional search titles (the blue headline in Google), keyed by clean URL, e.g. \"/sd\": \"Standard Duty Flux Recovery\". A page not listed here uses its front matter title. The site title suffix from site.json is added automatically. Empty on purpose: titles match the WordPress site until the title study is approved."
+}

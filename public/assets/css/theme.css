@@ -1,0 +1,31 @@
+/*
+Theme Name: Weld Engineering Theme
+Theme URI: http://www.weldengineering.com/
+Author: Devin Thayer
+Author URI: http://www.weldengineering.com/
+Description: The Weld Engineering Theme
+Version: 2505.3
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: weld engineering, tom less
+Text Domain: weldengineering
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+
+.sticky{}
+.newlink{text-align:left;padding-left:15px;font-family:Arial;}
+.pglink{text-align:left;padding-left:15px;font-family:Arial;}
+.text8pt{}
+.hdr{font-family:Arial;font-weight:bold;font-size:16px;}
+.hde{font-family:Arial;font-weight:normal;font-size:10px;text-transform:uppercase;}
+.bypostauthor{}
+.wp-caption{}
+.wp-caption-text{}
+.gallery-caption{}
+.alignright{}
+.alignleft{}
+.aligncenter{}
+.blk10pt{text-decoration:underline;font-weight:bold;font-family:arial;font-size:10pt;vertical-align:middle;}
+span.blue10ptbold i b a:visited{color:blue !important;}

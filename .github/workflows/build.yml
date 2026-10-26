@@ -1,0 +1,78 @@
+# Builds the static site on every push to main.
+# Download it: Actions tab -> latest "Build site" run -> Artifacts -> weldengineering-site
+name: Build site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npx @11ty/eleventy
+      - name: Verify canonical and sitemap URLs
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from html.parser import HTMLParser
+          from urllib.parse import urlsplit, unquote
+          import xml.etree.ElementTree as ET
+
+          root = Path("_site")
+          host = json.loads(Path("src/_data/site.json").read_text())["url"]
+          urls = [el.text for el in ET.parse(root / "sitemap.xml").findall(
+              ".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc")]
+          assert urls, "Sitemap must not be empty"
+          assert len(urls) == len(set(urls)), "Duplicate sitemap URLs"
+          assert host + "/" in urls, "Homepage missing from sitemap"
+
+          class CanonicalParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.urls = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  if tag == "link" and "canonical" in attrs.get("rel", "").split():
+                      self.urls.append(attrs.get("href"))
+
+          expected = set()
+          for source in Path("src").glob("*.html"):
+              if source.name == "404.html":
+                  continue
+              output = root / source.name
+              assert output.is_file(), f"Missing output: {output}"
+              route = "/" if source.name == "index.html" else "/" + source.stem
+              wanted = host + route
+              parser = CanonicalParser()
+              parser.feed(output.read_text())
+              assert parser.urls == [wanted], (output, parser.urls, wanted)
+              expected.add(wanted)
+
+          assert set(urls) == expected, ("Unexpected sitemap entries", set(urls) ^ expected)
+          for url in urls:
+              assert url.startswith(host + "/"), f"Wrong host: {url}"
+              parsed = urlsplit(url)
+              assert not parsed.query and not parsed.fragment, f"Noncanonical URL: {url}"
+              assert not parsed.path.endswith((".html", ".php")), f"Old suffix: {url}"
+              assert parsed.path not in ("/404", "/sdo", "/hdo"), f"Excluded page: {url}"
+              path = unquote(parsed.path).lstrip("/")
+              output = root / ("index.html" if not path else path + ".html")
+              assert output.is_file(), f"Sitemap target missing: {url}"
+
+          print(f"Verified {len(urls)} clean sitemap URLs and matching canonical tags.")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weldengineering-site
+          path: _site
+          include-hidden-files: true   # keeps .htaccess in the ZIP
+          if-no-files-found: error
+

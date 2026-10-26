@@ -1,0 +1,33 @@
+{#- Footer tagline, copyright, and bottom links (from src/_data/site.json) -#}
+<table border="0" cellpadding="0" cellspacing="0" class="bottom">
+			<tr height="60">
+				<td height="60" align="center" valign="bottom" id="footer">
+					<span class="savemon" style="vertical-align: bottom;">&#160;"Save Flux. Save Money. Save The </span><span class="erthn savemon">Earth&#160;</span><span class="savemon" style="vertical-align: bottom;">."&#160;</span>
+					<br>
+					<table width="100%">
+						<tr>
+							<td width="50">
+							</td>
+							<td class="txt8pt">
+								<span class="txt8pt">
+
+									Copyright &copy; {{ site.copyrightStart }}-{{ year }} Weld Engineering Co., Inc. All Rights Reserved.
+
+								</span>
+							</td>
+							<td width="50">
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<div class="botlinks">
+			<span class="botlinks">
+				| <a href="#Top" title="Top of Page">Top of Page</a>
+			{%- for item in site.bottomLinks %}
+				| <a href="{{ item.href }}"{% if item.title %} title="{{ item.title }}"{% endif %}{% if item.key == pageKey %} aria-current="page"{% endif %}>{{ item.label }}</a>
+			{%- endfor %}
+				|
+			</span>
+		</div>

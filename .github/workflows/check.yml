@@ -1,0 +1,43 @@
+# Builds the site, checks every link/image, and compares each page with the live
+# WordPress site. Report: the run's Summary page, and SITE_CHECK.md on the
+# site-preview branch (which also holds the built HTML/CSS/JS for review).
+name: Check site
+
+on:
+  push:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npx @11ty/eleventy
+      - name: Check links and compare with the live site
+        run: python3 scripts/check_site.py _site
+      - name: Show the report on this run's Summary page
+        run: cat SITE_CHECK.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish report + built text files to the site-preview branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir preview
+          cp SITE_CHECK.md preview/
+          cd _site
+          find . -type f \( -name '*.html' -o -name '*.css' -o -name '*.js' -o -name '*.xml' -o -name '*.txt' -o -name '.htaccess' \) \
+            -not -path './catalog/*' -exec cp --parents {} ../preview/ \;
+          cd ../preview
+          git init -q -b site-preview
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Site check for ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" site-preview

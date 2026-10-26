@@ -1,0 +1,60 @@
+{
+  "url": "https://www.weldengineering.com",
+  "titleSuffix": "Weld Engineering Co. &#8211; Submerged Arc Flux Handling Equipment - Save Flux. Save Money. Save the Earth.",
+  "homeTitle": "Weld Engineering Co. &#8211; Submerged Arc Flux Handling Equipment - Save Flux. Save Money. Save the Earth.",
+  "shareImage": "/images/header.png",
+  "tagline": "&quot;MANUFACTURERS OF THE MOST COMPLETE LINE OF SUBMERGED ARC FLUX HANDLING EQUIPMENT IN THE WORLD&quot;",
+  "since": "Excellence Since 1979",
+  "address": ["34 FRUIT ST.", "SHREWSBURY, MA 01545 U.S.A."],
+  "phone": "(508) 842-2224",
+  "fax": "(508) 842-3893",
+  "email": "sales@weldengineering.com",
+  "copyrightStart": "1999",
+  "announcement": "",
+  "org": {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Weld Engineering Co., Inc.",
+    "url": "https://www.weldengineering.com/",
+    "description": "Manufacturer of submerged arc flux handling equipment: flux recovery systems, pressure feed tanks, auto-mixing units and flux ovens.",
+    "foundingDate": "1979",
+    "telephone": "+1-508-842-2224",
+    "faxNumber": "+1-508-842-3893",
+    "email": "sales@weldengineering.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "34 Fruit St.",
+      "addressLocality": "Shrewsbury",
+      "addressRegion": "MA",
+      "postalCode": "01545",
+      "addressCountry": "US"
+    }
+  },
+  "verify": {
+    "google": "kKJ9iywZvgmlap1uOM1vzP6mPn2UbkJFOdnweSS/bmo=",
+    "yahoo": "0e89d8d86f9ebc1d"
+  },
+  "nav": [
+    { "key": "home", "id": 42, "label": "Home", "href": "/", "title": "Weld Engineering Home", "pad": true },
+    { "key": "new", "id": 37, "label": "New!", "href": "/new", "title": "New Weld Engineering Co., Inc. Products!", "pad": true },
+    { "key": "sd", "id": 38, "label": "Standard Duty", "href": "/sd", "title": "Standard Duty Submerged Arc Welding Flux Recovery" },
+    { "key": "hd", "id": 39, "label": "Heavy Duty", "href": "/hd", "title": "Heavy Duty Submerged Arc Welding Flux Recovery" },
+    { "key": "pf", "id": 40, "label": "Pressure Feed", "href": "/pf", "title": "Pressure Feed and Recovery Systems" },
+    { "key": "ham", "id": 41, "label": "Auto-Mixing", "href": "/ham", "title": "Heated Automatic Mixing Ovens" },
+    { "key": "ro", "id": 36, "label": "Flux Ovens", "href": "/ro", "title": "Flux Re-Bake Ovens" },
+    { "key": "catalog", "id": 43, "label": "Catalog", "href": "/catalog/Prod_Sel_Pgs_w_Index/", "title": "View Our Interactive Catalog", "newTab": true },
+    { "key": "info", "id": 715, "label": "Info Request", "href": "mailto:sales@weldengineering.com?subject=Product%20Information%20Request", "title": "Email Us for More Information" }
+  ],
+  "bottomLinks": [
+    { "key": "home", "label": "Home", "href": "/", "title": "Weld Engineering Home" },
+    { "key": "new", "label": "New Products", "href": "/new" },
+    { "key": "sd", "label": "Standard Duty", "href": "/sd" },
+    { "key": "hd", "label": "Heavy Duty", "href": "/hd" },
+    { "key": "pf", "label": "Pressure Feed", "href": "/pf" },
+    { "key": "ham", "label": "Auto-Mixing", "href": "/ham" },
+    { "key": "ro", "label": "Flux Ovens", "href": "/ro" },
+    { "key": "calc", "label": "Calculator", "href": "/calc" },
+    { "key": "mission", "label": "Mission", "href": "/mission" },
+    { "key": "map", "label": "Site Map", "href": "/map" }
+  ]
+}

@@ -1,0 +1,33 @@
+{#- Shared page shell for every page. Each page file (src/*.html) only holds
+    its unique middle section plus front matter:
+      title     page name, shown before the site title ("" on the home page)
+      nav       top-nav item to highlight (key from site.json nav), or null
+      pageKey   bottom-link item to mark as current (key from site.json)
+      bodyClass CSS classes for <body> (kept from WordPress for the old CSS) -#}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		{% include "partials/head.njk" %}
+	</head>
+	<body class="{{ bodyClass }}">
+	{%- if pageKey != "home" %}<a name="Top"></a>{% endif %}
+	<center>
+		{% include "partials/header.njk" %}
+		{% include "partials/nav.njk" %}
+		{%- if site.announcement %}
+		<table border="0" cellpadding="0" cellspacing="0" class="announce">
+			<tr>
+				<td>
+					<span style="font-family:Arial;font-size:19px;font-weight:bold;text-align:center;">{{ site.announcement | safe }}</span>
+				</td>
+			</tr>
+		</table>
+		{%- endif %}
+{{ content | safe }}
+		{% include "partials/footer.njk" %}
+	{%- if pageKey != "home" %}
+	<div id="fade" class="noprint"><span class="clseimg">Click Image to Close.</span></div>
+	{%- endif %}
+	</body>
+</html>

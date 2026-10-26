@@ -1,0 +1,14 @@
+{#- Tiny forwarding page. Front matter: redirect: <target URL> -#}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="refresh" content="0;url={{ redirect }}">
+	<link rel="canonical" href="{{ redirect }}">
+	<title>Redirecting&hellip;</title>
+	<script type="text/javascript">window.location.replace({{ redirect | dump | safe }});</script>
+</head>
+<body>
+	<p>If you are not redirected automatically, <a href="{{ redirect }}">click here</a>.</p>
+</body>
+</html>

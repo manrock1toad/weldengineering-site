@@ -1,0 +1,80 @@
+{#- Search/social metadata: titles from front matter or src/_data/titles.json,
+    descriptions from src/_data/descriptions.json, company facts from site.json -#}
+{%- set pageUrl = page.url | cleanUrl %}
+{%- set is404 = (pageKey == "404") %}
+{%- set pageTitle = titles[pageUrl] or title %}
+{%- set fullTitle = (pageTitle ~ " | " ~ site.titleSuffix) if pageTitle else site.homeTitle %}
+{%- set description = descriptions[pageUrl] %}
+<title>{{ fullTitle | safe }}</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Content-Style-Type" content="text/css">
+		{%- if description %}
+		<meta name="description" content="{{ description }}" />
+		{%- endif %}
+		<meta name="robots" content="{% if indexable and not is404 %}max-image-preview:large{% else %}noindex, nofollow{% endif %}" />
+		{%- if not is404 %}
+		<link rel="canonical" href="{{ site.url }}{{ pageUrl }}" />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="{{ site.org.name }}" />
+		<meta property="og:title" content="{{ (pageTitle or site.homeTitle) | safe }}" />
+		<meta property="og:description" content="{{ description }}" />
+		<meta property="og:url" content="{{ site.url }}{{ pageUrl }}" />
+		<meta property="og:image" content="{{ site.url }}{{ site.shareImage }}" />
+		<meta name="twitter:card" content="summary_large_image" />
+		{%- endif %}
+		{%- if pageKey == "home" %}
+		<script type="application/ld+json">{{ site.org | dump | safe }}</script>
+		{%- endif %}
+		<link rel="stylesheet" type="text/css" href="{{ assets.themeCss }}" />
+		<link href="{{ assets.siteCss }}" type="text/css" rel="stylesheet" media="screen" />
+		<link href="{{ assets.printCss }}" type="text/css" rel="stylesheet" media="print">
+		<script type="text/javascript" src="{{ assets.legacyJquery }}"></script>
+		<script type="text/javascript" src="{{ assets.siteJs }}"></script>
+		<meta name="verify-v1" content="{{ site.verify.google }}" />
+		<meta name="y_key" content="{{ site.verify.yahoo }}">
+		<style>
+/* The few WordPress base styles the old theme relied on */
+:where(body){margin:0}body{padding:0}
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+.aligncenter{clear:both}
+.screen-reader-text{border:0;clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-wrap:normal!important}
+/* Page headings were <font> tags on WordPress; the build wraps them in <h1> without changing the look */
+h1.pagetitle{display:inline;margin:0;padding:0;font:inherit}
+/* Phones/tablets don't support a fixed page background (stylesheet.css) and leave white gaps
+   below the first screen. Scroll it with the page there; the dark color covers any gap while loading. */
+body{background-color:#333}
+@media (hover:none),(pointer:coarse){body{background-attachment:scroll}}
+		</style>
+		<link rel="stylesheet" href="{{ assets.sliderCss }}" media="all" />
+		<script type="text/javascript" src="{{ assets.jquery }}"></script>
+		<script type="text/javascript" src="{{ assets.jqueryMigrate }}"></script>
+		<script type="text/javascript" src="{{ assets.sliderEasing }}"></script>
+		<script type="text/javascript" src="{{ assets.sliderJs }}"></script>
+		<style type="text/css">ul.lof-navigator li{background: url({{ assets.sliderPagination }}) 0 0 no-repeat;} ul.lof-navigator li.active{background: url({{ assets.sliderPaginationCurrent }}) 0 0 no-repeat;}
+.lof-opacity{width:850px;height:px;}
+.lof-opacity li{width:850px;height:px;}
+#buttnav {text-align: right; padding-right: 0px; position: relative; top: -23px; left: -13px;}
+#buttnav img {cursor: pointer;}
+		</style>
+		<script type="text/javascript">
+jQuery.noConflict();
+jQuery(document).ready( function($){
+	var buttons = { previous:$('#buttnav .prevbutt') , next:$('#buttnav .nextbutt'), stop:$('#buttnav .pausebutt') };
+	$obj = $('#lofslidecontent45')
+	.lofJSidernews( { interval : 6000,
+	easing : 'easeInOutQuad',
+	duration : 1800,
+	auto : true,
+	maxItemDisplay : 10,
+	startItem:0,
+	navPosition     : 'horizontal',
+	navigatorHeight : 15,
+	navigatorWidth  : 20,
+	buttons : buttons,
+	mainWidth:850} );
+});
+		</script>
+		{%- if pageKey == "home" %}
+		<script src="{{ assets.lightboxJs }}"></script><link href="{{ assets.lightboxCss }}" rel="stylesheet" />
+		{%- endif %}
+

@@ -1,0 +1,17 @@
+{
+  "themeCss": "/assets/css/theme.css",
+  "siteCss": "/assets/css/stylesheet.css",
+  "printCss": "/assets/css/print.css",
+  "legacyJquery": "/assets/js/jquery-legacy.js",
+  "siteJs": "/assets/js/script.js",
+  "jquery": "/assets/js/jquery.min.js",
+  "jqueryMigrate": "/assets/js/jquery-migrate.min.js",
+  "sliderCss": "/assets/easing-slider/slider.css",
+  "sliderEasing": "/assets/easing-slider/jquery.easing.js",
+  "sliderJs": "/assets/easing-slider/script.js",
+  "sliderPagination": "/assets/easing-slider/images/pagination.png",
+  "sliderPaginationCurrent": "/assets/easing-slider/images/pagination_current.png",
+  "sliderIndicator": "/assets/easing-slider/images/indicator.gif",
+  "lightboxCss": "/includes/lightbox/css/lightbox.css",
+  "lightboxJs": "/includes/lightbox/js/lightbox.js"
+}

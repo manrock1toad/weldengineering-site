@@ -1,0 +1,14 @@
+{#- Top nav. Items live in src/_data/site.json; the page's `nav` front matter picks the highlighted one -#}
+<table class="navbar">
+			<tr>
+			{%- for item in site.nav %}
+			{%- if item.key == nav %}
+				<td id="menu-item-{{ item.id }}" class="navfrom">{{ item.label }}</td>
+			{%- else %}
+				<td id="menu-item-{{ item.id }}" class="navto">
+					{% if item.pad %}&nbsp;{% endif %}<a class="navlinks" href="{{ item.href }}" title="{{ item.title }}"{% if item.newTab %} target="_blank"{% endif %}>{{ item.label }}</a>{% if item.pad %}&nbsp;{% endif %}
+				</td>
+			{%- endif %}
+			{%- endfor %}
+			</tr>
+		</table>

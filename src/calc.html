@@ -1,0 +1,238 @@
+---
+layout: "layouts/base.njk"
+title: "Resources Recovered Calculator"
+nav: null
+pageKey: "calc"
+bodyClass: "wp-singular page-template-default page page-id-93 wp-theme-blankslate"
+permalink: "calc.html"
+---
+		<table border="0" cellpadding="0" cellspacing="0" class="normtable">
+			<tr height="45">
+				<td align="center" valign="top" height="45">
+					<center>
+						<div style="position:relative;top:10px;height:25px;z-index:1;">
+							<a name="Top">
+								<font face="Arial Black" size="4">
+									<strong>Resources Recovered Calculator</strong>
+								</font>
+							</a>
+						</div>
+					</center>
+				</td>
+			</tr>
+			<tr>
+				<td valign="top"><div style="text-align: center; font-family: Arial; font-size: 12px;">Fill in the form below to get a cost reduction estimate.</div>
+				<div align="center">
+					<form method="POST" name="CALCULATOR">
+					<input type="hidden" name="sigmoidalinputs" value="2.4375--41--9.101501591942--0.75">
+					<table border="1" class="mtbl" cellpadding="2">
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Flux Recovery Equipment Type:
+
+							</td>
+							<td class="mbx">
+
+								<select name="equip" onChange="recalcd('ch');">
+
+									<option value="250--3000">Standard Duty</option>
+									<option value="500--15000">Heavy Duty</option>
+									<option value="8000--45000">Pipe Mill</option>
+
+								</select>
+
+							</td>
+							<td class="mcmt">
+
+								Specific types of flux recovery equipment for different needs.
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Welding Procedure:
+
+							</td>
+							<td class="mbx">
+
+								<select name="weld" onChange="recalcd('ch');">
+
+									<option value="2">Single Wire Weld</option>
+									<option value="3">Twin Wire Weld</option>
+									<option value="6">Tandem Wire Weld</option>
+									<option value="7">3 Arc Weld</option>
+									<option value="12">5 Arc Weld</option>
+
+								</select>
+								
+							</td>
+							<td class="mcmt">
+
+								Recoverable flux varies with type of welding procedure from 50% to over 90%.  (These factors are estimates only.)
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Do You Manually Recover Flux?
+
+							</td>
+							<td class="mbx">
+
+								<select name="rcvr" onChange="recalcd('ch');">
+
+									<option value="1.00--1">No, it is swept and disposed.</option>
+									<option value="1.5--0">Yes, it is caught and sifted.</option>
+
+								</select>
+								
+							</td>
+							<td class="mcmt">
+
+								It is assumed that manually recovering flux takes an estimated 50% longer to catch and sift vs. sweep and dispose.
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mcmt" colspan="3">
+							
+								Please review the following information for your specific setup. Note that changing the above selection box fields will recalculate the below information.
+							
+							</td>
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Weld Metal Deposited per Week:
+
+							</td>
+							<td class="mbx">
+
+								<input type="text" name="metal" size="8" value="250" id="lbpwk"> (lb/wk)
+
+							</td>
+							<td class="mcmt">
+
+								Typical metal deposited per week: 250 lbs. for Standard Duty, 500 lbs. for Heavy Duty, and 8000 lbs. for Pipe Mill.  (Averages are estimates only.)
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Cost of Flux per Pound:
+
+							</td>
+							<td class="mbx">
+
+									
+								<input type="text" name="flux" size="8" value="1.74"> ($/lb)
+
+							</td>
+							<td class="mcmt">
+
+								Typical is &dollar;1.74/lb of flux. (Estimate only.)
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Labor Saved per Week:
+
+							</td>
+							<td class="mbx">
+
+									
+								<input type="text" name="hours" size="8" value="2.75"> (hrs/wk)
+
+							</td>
+							<td class="mcmt">
+
+								Our equipment saves the manual labor required to manually recover or dispose of the flux.  (Estimate only.)
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Labor & Overhead Rate:
+
+							</td>
+							<td class="mbx">
+
+									
+								<input type="text" name="labor" size="8" value="75"> ($/hr)
+
+							</td>
+							<td class="mcmt">
+
+								Typical is 75 $/hr for labor + burden to dispose/recover flux manually.
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Cost of Equipment:
+
+							</td>
+							<td class="mbx">
+
+									
+								<input type="text" name="ecost" size="8" value="3000"> ($)
+
+							</td>
+							<td class="mcmt">
+
+								Typical is &dollar;3000 for Standard Duty, &dollar;15000 for Heavy Duty, and 45000 for Pipe Mill setups. (Costs are estimates only.)
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mtxt" nowrap>
+
+								Flux to Metal Ratio:
+
+							</td>
+							<td class="mbx">
+
+									
+								<input type="text" name="mult" size="8" value="2"> (:1)
+
+							</td>
+							<td class="mcmt">
+
+								Typical is 2:1 for Single, 3:1 for Twin, 6:1 for Tandem, and 12:1 for 5 arc. (Ratios are are estimates only.)
+
+							</td>
+						</tr>
+						<tr>
+							<td class="mrs" colspan="3">
+
+								<input type="button" value="Calculate!" name="Calculate" OnClick="calculate()">
+								<input type="reset" value="Reset" name="Reset" OnClick="clear1()"><br><br>
+
+								ESTIMATED SAVINGS:<br><br>
+									
+								<center>
+								<div id="writeto" style="height:80px;width:350px;background-color:white;text-align:center;padding-top:5px;">
+								</div><br>
+								<div style="width:350px;font-family:Arial;font-size:9px;text-align:left;font-weight:normal;">
+
+									<b>DISCLAIMER:</b>  Calculated values are estimates only and can vary from actual values.
+									<b>Weld Engineering</b> is not responsible for actual cost(s) saved.
+									Please contact <b>Weld Engineering</b> for assistance to attain more accurate cost reductions.
+
+								</div>
+								</center><br>
+							</td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>
+		

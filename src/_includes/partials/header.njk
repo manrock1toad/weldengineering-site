@@ -1,0 +1,139 @@
+{#- Earth "Resources Saved" marquees + company header. Text lives in src/_data/site.json -#}
+<div class="sv">
+			<center>
+				<table border="0" cellpadding="0" cellspacing="0" width="875">
+					<tr>
+						<td width="875" align="left">
+							<marquee scrollamount="3" class="svt2">
+
+								Click On<br>Earth to See<br>Resources<br>Saved!!
+
+							</marquee>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+		<div class="sv">
+			<center>
+				<table border="0" cellpadding="0" cellspacing="0" width="875">
+					<tr>
+						<td width="875" align="left">
+							<marquee scrollamount="3" class="svt">
+
+								Click On<br>Earth to See<br>Resources<br>Saved!!
+
+							</marquee>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+		<div class="blankcrcl">
+			<center>
+				<table border="0" cellpadding="0" cellspacing="0" width="875">
+					<tr>
+						<td width="875" align="left" style="padding-top:78px;padding-left:360px">
+
+							<img src="/images/blankcrcl.gif" usemap="#earthmap" border="0">
+
+							<map name="earthmap">
+
+								<area href="/calc.html" shape="circle" coords="45,45,45" alt="Click on Earth for Money Saver Calculator">
+
+							</map>
+
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+		<div id="printheader">
+
+			<img src="/images/header.png" alt="Weld Engineering Header">
+
+		</div>
+		<table class="header" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td class="heada" colspan="4">
+					<span class="text11ptblackbolditalic">
+
+						{{ site.tagline | safe }}
+
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="headnester" rowspan="2">
+					<table class="headnest" border="0" cellpadding="0" cellspacing="0">
+						<tr><td class="headb">
+							<span class="weldlogo">
+
+								WELD
+
+							</span>
+						</td></tr>
+						<tr><td class="headc">
+							<div class="headc2">
+								<span class="blk8ptbold">
+
+									ENGINEERING CO., INC.
+
+								</span>
+							</div>
+						</td></tr>
+						<tr><td class="headd">
+							<div class="headd2">
+								<span class="blk11ptitalicbold">
+
+									{{ site.since }}
+
+								</span>
+							</div>
+						</td></tr>
+					</table>
+				</td>
+				<td rowspan="2" class="save">
+
+					<img src="/images/save.png" alt="Flux Recovery, Earth Resource Recovery, Save Flux, Save the Earth, Save Money">
+
+				</td>
+				<td class="heade">
+
+					<div style="position:relative;width:1px;height:1px"></div>
+
+				</td>
+				<td class="headg">
+					<span class="red10ptbold">
+
+						{% for line in site.address %}{{ line }}<br>
+						{% endfor %}PHONE: {{ site.phone }}<br>
+
+						FAX: {{ site.fax }}
+
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="headf">
+
+					<img src="/images/checkmark_header.gif" height="29" width="30" alt="Checkmark">
+
+				</td>
+				<td class="headh">
+					<div class="headh2">
+						<span class="blue10ptbold">
+
+							<a href="mailto:{{ site.email }}">
+								E-MAIL: {{ site.email }}
+							</a>
+
+						</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="headi" colspan="3">
+				</td>
+			</tr>
+		</table>
