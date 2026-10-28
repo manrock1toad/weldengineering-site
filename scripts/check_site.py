@@ -11,7 +11,12 @@ Run by .github/workflows/check.yml after every build. Writes SITE_CHECK.md:
      canonical matches; robots.txt points at the sitemap and doesn't block the
      site; each page has one title, one <h1>, a description, a canonical,
      social tags, lang, no noindex, and alt text on every image.
-  4. Live vs. built: for each page, the visible text, links, and images on
+  4. Deployed site: real requests to the site Cloudflare is serving
+     (DEPLOYED_URL, default https://we-site.pages.dev). Sitemap pages return
+     200, robots.txt and noindex are right for a test or production site, every
+     _redirects rule returns its code and target, unknown URLs return a real
+     404, and PDFs are served as PDFs.
+  5. Live vs. built: for each page, the visible text, links, and images on
      www.weldengineering.com are compared with the built copy.
 Only the Python standard library is used. Exit code is always 0; read the report.
 """
@@ -21,6 +26,7 @@ import json
 import os
 import re
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -28,6 +34,7 @@ from pathlib import Path
 
 SITE = Path(sys.argv[1] if len(sys.argv) > 1 else "_site")
 LIVE = "https://www.weldengineering.com"
+DEPLOYED = os.environ.get("DEPLOYED_URL", "https://we-site.pages.dev").rstrip("/")
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/130.0 Safari/537.36")
 PAGES = ["index", "new", "sd", "hd", "pf", "ham", "ro", "tb", "calc", "mission", "map"]
@@ -238,6 +245,132 @@ def seo_checks():
     return rows, problems
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs):  # report redirects instead of following them
+        return None
+
+
+NO_REDIRECT = urllib.request.build_opener(_NoRedirect)
+
+
+def http_get(url):
+    """One request, redirects not followed: (status, headers, body bytes)."""
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    try:
+        with NO_REDIRECT.open(req, timeout=30) as r:
+            return r.status, r.headers, r.read()
+    except urllib.error.HTTPError as e:
+        return e.code, e.headers, e.read()
+    except Exception as e:  # noqa: BLE001
+        return f"no answer ({type(e).__name__})", {}, b""
+
+
+def location_of(headers):
+    """Redirect target as path#fragment, whatever host Cloudflare puts in front."""
+    loc = urllib.parse.urlparse(headers.get("Location") or "")
+    return loc.path + ("#" + loc.fragment if loc.fragment else "")
+
+
+def smoke_checks():
+    """Request the deployed site; return (report lines, problems)."""
+    production = (urllib.parse.urlparse(DEPLOYED).hostname or "").endswith("weldengineering.com")
+    lines, problems = [], []
+
+    def ok(msg):
+        lines.append(f"- OK: {msg}")
+
+    def bad(msg):
+        lines.append(f"- **Problem:** {msg}")
+        problems.append(msg)
+
+    status, _, body = http_get(DEPLOYED + "/sitemap.xml")
+    locs = []
+    if status != 200:
+        bad(f"`/sitemap.xml` returned {status}.")
+    else:
+        try:
+            locs = [(e.text or "").strip() for e in ET.fromstring(body).iter(SM_NS + "loc")]
+            ok(f"`/sitemap.xml` returns 200 and is valid XML ({len(locs)} URLs).")
+        except ET.ParseError as e:
+            bad(f"`/sitemap.xml` is not valid XML: {e}")
+    not_200 = []
+    for loc in locs:
+        path = urllib.parse.urlparse(loc).path or "/"
+        status, _, _ = http_get(DEPLOYED + path)
+        if status != 200:
+            not_200.append(f"`{path}` ({status})")
+    if not_200:
+        bad("Sitemap pages that don't return 200: " + ", ".join(not_200))
+    elif locs:
+        ok(f"All {len(locs)} sitemap pages return 200.")
+
+    status, _, body = http_get(DEPLOYED + "/robots.txt")
+    blocks_all = bool(re.search(r"(?im)^\s*Disallow:\s*/\s*$", body.decode("utf-8", "replace")))
+    if status != 200:
+        bad(f"`/robots.txt` returned {status}.")
+    elif production and blocks_all:
+        bad("`robots.txt` blocks all crawlers on the production site.")
+    elif production:
+        ok("`robots.txt` allows crawling.")
+    elif blocks_all:
+        ok("`robots.txt` blocks all crawlers (right for a test site).")
+    else:
+        bad("`robots.txt` on the test site doesn't block crawlers.")
+
+    status, headers, body = http_get(DEPLOYED + "/")
+    noindex = ("noindex" in (headers.get("X-Robots-Tag") or "").lower()
+               or bool(NOINDEX_RE.search(body.decode("utf-8", "replace"))))
+    if status != 200:
+        bad(f"The home page returned {status}.")
+    elif production and noindex:
+        bad("The production home page is marked noindex.")
+    elif production:
+        ok("The home page returns 200 and can be indexed.")
+    elif noindex:
+        ok("The home page returns 200 and is marked noindex (right for a test site).")
+    else:
+        bad("The test site's home page isn't marked noindex.")
+
+    rules = []
+    redirects = SITE / "_redirects"
+    if redirects.exists():
+        for ln in redirects.read_text(encoding="utf-8").splitlines():
+            parts = ln.split()
+            if len(parts) >= 2 and not parts[0].startswith("#"):
+                rules.append((parts[0], parts[1], int(parts[2]) if len(parts) > 2 else 302))
+    wrong = []
+    for src, dest, code in rules:
+        status, headers, _ = http_get(DEPLOYED + src)
+        got = location_of(headers)
+        if status != code or got != dest:
+            wrong.append(f"`{src}` gave {status} to `{got or 'nowhere'}` (want {code} to `{dest}`)")
+            continue
+        status, _, _ = http_get(DEPLOYED + dest.split("#")[0])
+        if status != 200:
+            wrong.append(f"`{src}` goes to `{dest}`, which returns {status}")
+    if not rules:
+        bad("No `_redirects` file in the build.")
+    elif wrong:
+        bad(f"{len(wrong)} of {len(rules)} old addresses don't redirect correctly: " + "; ".join(wrong))
+    else:
+        ok(f"All {len(rules)} old addresses in `_redirects` return their redirect code and land on a page that returns 200.")
+
+    for path in ("/no-such-page-" + os.environ.get("GITHUB_SHA", "check")[:7], "/wp-login.php"):
+        status, _, _ = http_get(DEPLOYED + path)
+        if status == 404:
+            ok(f"`{path}` returns a real 404.")
+        else:
+            bad(f"`{path}` returned {status} instead of 404.")
+
+    status, headers, _ = http_get(DEPLOYED + "/catalog/PT-100-LIT.pdf")
+    ctype = headers.get("Content-Type") or ""
+    if status == 200 and "application/pdf" in ctype:
+        ok("Literature PDFs are served as PDFs (`/catalog/PT-100-LIT.pdf`).")
+    else:
+        bad(f"`/catalog/PT-100-LIT.pdf` returned {status} with type `{ctype or 'none'}`.")
+    return lines, problems
+
+
 def fetch(url):
     try:
         req = urllib.request.Request(url, headers={"User-Agent": UA})
@@ -344,7 +477,11 @@ def main():
             "| Page | Title chars | H1 | Description | Canonical | Social tags | Structured data | Images missing alt |",
             "| --- | --- | --- | --- | --- | --- | --- | --- |"] + seo_rows + [""]
     rep += [f"- {p}" for p in seo_problems] or ["- None."]
-    rep += ["", "## 4. Live vs. built, page by page",
+    smoke_lines, smoke_problems = smoke_checks()
+    rep += ["", f"## 4. Deployed site: {DEPLOYED} ({len(smoke_problems)} problems)",
+            "Real requests to whatever Cloudflare is serving during this run. If Cloudflare's deploy "
+            "hadn't finished yet, these results are for the previous version.", ""] + smoke_lines
+    rep += ["", "## 5. Live vs. built, page by page",
             "Expected differences: the email shows as plain text instead of Cloudflare's "
             "\"[email protected]\", thumbnails point at `images/generated/` instead of `image.php`, "
             "and page links use clean URLs (`sd`) where live uses `sd.php`.", ""]
