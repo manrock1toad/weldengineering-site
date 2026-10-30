@@ -1,0 +1,11 @@
+body {
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 15px;
+	margin-bottom: 25px;}
+
+#printheader {
+	display: none;}
+
+.noprint {
+	display: block;}

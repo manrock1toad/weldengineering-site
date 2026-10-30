@@ -1,0 +1,30 @@
+# weldengineering.com: static site built by Eleventy (see README.md in the repo)
+# Apache/cPanel fallback only. Cloudflare Pages uses _redirects and _headers instead.
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Old WordPress addresses -> new clean page URLs (keeps old links and Google results working)
+RewriteRule ^index\.php$ / [R=301,L,NC]
+RewriteRule ^ir\.php$ / [R=301,L,NC]
+RewriteRule ^sdo\.php$ /catalog/Prod_Sel_Pgs_w_Index/#p=30 [R=301,L,NC,NE]
+RewriteRule ^hdo\.php$ /catalog/Prod_Sel_Pgs_w_Index/#p=57 [R=301,L,NC,NE]
+RewriteRule ^(new|sd|hd|tb|pf|ham|ro|calc|mission|map)\.php$ /$1 [R=301,L,NC]
+RewriteRule ^(wp-sitemap|sitemap_index)\.xml$ /sitemap.xml [R=301,L,NC]
+
+# The static site has no PHP. Refuse to run any PHP file that gets left behind.
+RewriteRule \.(php[0-9]?|phtml|phar)$ - [F,NC]
+
+# WordPress addresses bots keep probing
+RewriteRule ^(wp-admin|wp-json)(/|$) - [F,NC]
+
+# Same clean URLs as Cloudflare, for the site's own pages only:
+# /sd.html -> /sd (301), and /sd serves sd.html
+RewriteCond %{THE_REQUEST} \s/+(new|sd|hd|tb|pf|ham|ro|calc|mission|map)\.html[\s?]
+RewriteRule ^ /%1 [R=301,L,NE]
+RewriteRule ^(new|sd|hd|tb|pf|ham|ro|calc|mission|map)/?$ $1.html [L]
+</IfModule>
